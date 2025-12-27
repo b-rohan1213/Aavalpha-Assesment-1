@@ -1,33 +1,37 @@
+using AvalphaTechnologies.CommissionCalculator.Business.Services.Interface;
+using AvalphaTechnologies.CommissionCalculator.Data.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AvalphaTechnologies.CommissionCalculator.Controllers
 {
+    /// <summary>
+    /// Controller to hold commision related api endpoints.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class CommisionController : ControllerBase
     {
-        [ProducesResponseType(typeof(CommissionCalculationResponse), 200)]
+        private readonly ICommisionService commisionService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommisionController"/> class.
+        /// </summary>
+        /// <param name="commisionService">Commision service.</param>
+        public CommisionController(ICommisionService commisionService)
+        {
+            this.commisionService = commisionService;
+        }
+
+        /// <summary>
+        /// Api to calculate commision based on user input.
+        /// </summary>
+        /// <param name="calculationRequest">User input.</param>
+        /// <returns>Commision calculation result.</returns>
         [HttpPost]
+        [ProducesResponseType(typeof(CommissionCalculationResponse), StatusCodes.Status200OK)]
         public IActionResult Calculate(CommissionCalculationRequest calculationRequest)
         {
-            return Ok(new CommissionCalculationResponse() { 
-                AvalphaTechnologiesCommissionAmount = 999,
-                CompetitorCommissionAmount = 100
-            });
+            return this.Ok(this.commisionService.GetCommission(calculationRequest));
         }
-    }
-
-    public class CommissionCalculationRequest
-    {
-        public int LocalSalesCount { get; set; }
-        public int ForeignSalesCount { get; set; }
-        public decimal AverageSaleAmount { get; set; }
-    }
-
-    public class CommissionCalculationResponse
-    {
-        public decimal AvalphaTechnologiesCommissionAmount { get; set; }
-
-        public decimal CompetitorCommissionAmount { get; set; }
     }
 }
