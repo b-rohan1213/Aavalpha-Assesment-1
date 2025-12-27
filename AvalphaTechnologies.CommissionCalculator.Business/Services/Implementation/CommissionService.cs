@@ -4,9 +4,13 @@ using AvalphaTechnologies.CommissionCalculator.Data.Dto;
 
 namespace AvalphaTechnologies.CommissionCalculator.Business.Services.Implementation
 {
+    /// <summary>
+    /// Commission service.
+    /// </summary>
     public class CommissionService : ICommisionService
     {
-        public CommissionCalculationResponse getCommission(CommissionCalculationRequest calculationRequest)
+        // <inheritdoc/>
+        public CommissionCalculationResponse GetCommission(CommissionCalculationRequest calculationRequest)
         {
             if (calculationRequest == null)
             {
@@ -28,16 +32,16 @@ namespace AvalphaTechnologies.CommissionCalculator.Business.Services.Implementat
                 throw new InvalidDataException("Average sales amount should be positive.");
             }
 
-            CommissionCalculationResponse commissionCalculationResponse = new CommissionCalculationResponse
+            var commissionCalculationResponse = new CommissionCalculationResponse
             {
-                AvalphaTechnologiesCommissionAmount = this.calculateTotalCommission(Commisions.AvalphaLocalSalesCommission,Commisions.AvalphaForeignSalesCommission, calculationRequest),
-                CompetitorCommissionAmount = this.calculateTotalCommission(Commisions.CompetitorLocalSalesCommission,Commisions.CompetitorForeignSalesCommission, calculationRequest),
+                AvalphaTechnologiesCommissionAmount = this.CalculateTotalCommission(Commisions.AvalphaLocalSalesCommission, Commisions.AvalphaForeignSalesCommission, calculationRequest),
+                CompetitorCommissionAmount = this.CalculateTotalCommission(Commisions.CompetitorLocalSalesCommission, Commisions.CompetitorForeignSalesCommission, calculationRequest),
             };
 
             return commissionCalculationResponse;
         }
 
-        private decimal calculateTotalCommission(decimal localSalesRate, decimal foreignSalesRate, CommissionCalculationRequest calculationRequest)
+        private decimal CalculateTotalCommission(decimal localSalesRate, decimal foreignSalesRate, CommissionCalculationRequest calculationRequest)
         {
             decimal localSalesCommission = (calculationRequest.LocalSalesCount * calculationRequest.AverageSaleAmount) * (localSalesRate / 100);
             decimal foreignSalesCommission = (calculationRequest.ForeignSalesCount * calculationRequest.AverageSaleAmount) * (foreignSalesRate / 100);

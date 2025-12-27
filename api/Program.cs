@@ -18,7 +18,19 @@ namespace AvalphaTechnologies.CommissionCalculator
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Add CORS with restricted origin (React app)
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000") // Allow only React app's origin
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
+            app.UseCors("AllowReactApp"); // Apply CORS policy
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
